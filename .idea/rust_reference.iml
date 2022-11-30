@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/fast_check/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/type_system/types/collection/hash_map/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/type_system/types/collection/string/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/type_system/types/scalar/character/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/type_system/types/collection/string/target" />
+      <excludeFolder url="file://$MODULE_DIR$/type_system/types/scalar/character/target" />
+      <excludeFolder url="file://$MODULE_DIR$/fast_check/target" />
+      <excludeFolder url="file://$MODULE_DIR$/type_system/types/collection/hash_map/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
