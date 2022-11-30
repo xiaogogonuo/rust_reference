@@ -46,6 +46,34 @@ pub mod update_hash_map {
         assert_eq!(map["rust"], 1);
         map.entry("rust").or_insert(2);
         assert_eq!(map["rust"], 1);
+
+        // ---- testing::run_update_hash_map_entry stdout ----
+        // hello world about world: 0x102d6f180
+        // hello_0x102d6f180: 0x600000d2c1d8
+        // world_0x102d6f186: 0x600000d2c1a8
+        // about_0x102d6f18c: 0x600000d2c190
+        // world_0x102d6f192: 0x600000d2c1a8
+        // [src/lib.rs:75] map = {
+        //     "hello": 1,
+        //     "world": 2,
+        //     "about": 1,
+        // }
+        {
+            let text: &str = "hello world about world";
+            println!("{}: {:p}", text, text);
+
+            let mut map: HashMap<&str, u32> = HashMap::new();
+
+            for word in text.split_whitespace() {
+                // The `or_insert` method returns a mutable reference (&mut V) to the value for the
+                // specified key.
+                let count = map.entry(word).or_insert(0);
+                println!("{}_{:p}: {:p}", word, word, count);
+                *count += 1;
+            }
+
+            dbg!(map);
+        }
     }
 
     /// Removes a key from map, returning the value at the key if the key was previously in the map.
