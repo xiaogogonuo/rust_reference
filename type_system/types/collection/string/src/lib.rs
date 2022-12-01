@@ -244,7 +244,7 @@ pub mod iter_string {
         }
 
         // also be suitable for &str
-        dbg!("中国".chars());
+        let _ = "中国".chars();
     }
 
     pub fn with_bytes() {
@@ -261,12 +261,11 @@ pub mod iter_string {
         }
 
         // also be suitable for &str
-        dbg!("中国".bytes());
+        let _ = "中国".bytes();
     }
 }
 
-pub mod string_attribute {
-    use std::ops::Index;
+pub mod common_used_method_of_string {
 
     /// Returns the length of this String, in bytes, not [char]s or graphemes.
     pub fn len() {
@@ -395,27 +394,27 @@ mod testing {
     }
 
     #[test]
-    fn run_string_attribute_len() {
-        crate::string_attribute::len();
+    fn run_common_used_method_of_string_len() {
+        crate::common_used_method_of_string::len();
     }
 
     #[test]
-    fn run_string_attribute_contains() {
-        crate::string_attribute::contains();
+    fn run_common_used_method_of_string_contains() {
+        crate::common_used_method_of_string::contains();
     }
 
     #[test]
-    fn run_string_attribute_replace() {
-        crate::string_attribute::replace();
+    fn run_common_used_method_of_string_replace() {
+        crate::common_used_method_of_string::replace();
     }
 
     #[test]
-    fn run_string_attribute_replacen() {
-        crate::string_attribute::replacen();
+    fn run_common_used_method_of_string_replacen() {
+        crate::common_used_method_of_string::replacen();
     }
 
     #[test]
-    fn run_string_attribute_remove() {
-        crate::string_attribute::remove();
+    fn run_common_used_method_of_string_remove() {
+        crate::common_used_method_of_string::remove();
     }
 }
