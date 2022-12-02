@@ -64,15 +64,22 @@ pub mod result {
     /// filled in by the implementation of `File::open` with the type of the success value,
     /// `std::fs::File`, which is a file handle. The type of `E` used in the error value is
     /// `std::io::Error`.
-    pub fn open_file() {
-        let mut _file: Result<File> = File::open("rust.rs");
-        _file = Error("");
+    pub fn match_to_handle_result() {
+        let mut file_result: Result<File> = File::open("rust.rs");
+        let _file = match file_result {
+            Ok(file) => file,
+            Err(error) => panic!("Problem opening the file: {:?}", error),
+        };
+    }
+
+    pub fn match_on_different_errors() {
+        let file_result: Result<File> = File::open("rust.rs");
     }
 }
 
 mod testing {
     #[test]
     fn run_result_open_file() {
-        crate::result::open_file();
+        crate::result::match_to_handle_result();
     }
 }
