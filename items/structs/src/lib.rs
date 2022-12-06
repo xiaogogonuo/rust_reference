@@ -277,3 +277,126 @@ mod make_struct_field_public {
         inner::Player::new("rust").rank();
     }
 }
+
+pub mod memory_layout {
+
+    #[allow(dead_code)]
+    struct OneBytes {
+        f: i8,
+    }
+
+    pub fn size_of_struct_in_one_bytes() {
+        assert_eq!(std::mem::size_of::<OneBytes>(), 1);
+    }
+
+    #[allow(dead_code)]
+    struct TwoBytes {
+        f: i16,
+    }
+
+    pub fn size_of_struct_in_two_bytes() {
+        assert_eq!(std::mem::size_of::<TwoBytes>(), 2);
+    }
+
+    #[allow(dead_code)]
+    struct FourBytes {
+        f: char,
+    }
+
+    pub fn size_of_struct_in_four_bytes() {
+        assert_eq!(std::mem::size_of::<FourBytes>(), 4);
+    }
+
+    #[allow(dead_code)]
+    struct EightBytes {
+        f: i64,
+    }
+
+    pub fn size_of_struct_in_eight_bytes() {
+        assert_eq!(std::mem::size_of::<EightBytes>(), 8);
+    }
+
+    #[allow(dead_code)]
+    struct TwentyFourBytes {
+        f: String,
+    }
+
+    pub fn size_of_struct_in_twenty_four_bytes() {
+        assert_eq!(std::mem::size_of::<TwentyFourBytes>(), 24);
+    }
+
+    #[allow(dead_code)]
+    struct MixedBytes {
+        f1: u8,
+        f2: i16,
+        f3: char,
+        f4: String,
+        f5: String,
+        f6: u8,
+        f7: u16,
+    }
+
+    pub fn size_of_struct_in_mixed_bytes() {
+        // ---- testing::size_of_struct_in_bytes stdout ----
+        // f1: 0x70000DF92670
+        // f2: 0x70000DF9266C
+        // f3: 0x70000DF92668
+        // f4: 0x70000DF92638
+        // f5: 0x70000DF92650
+        // f6: 0x70000DF92671
+        // f7: 0x70000DF9266E
+
+        /*
+
+        0x70000DF92638 ～ 0x70000DF9263F     |<-- 8 BYTES -->|       ---
+                                                                      |
+        0x70000DF92640 ～ 0x70000DF92647     |<-- 8 BYTES -->|        f4
+                                                                      |
+        0x70000DF92648 ～ 0x70000DF9264F     |<-- 8 BYTES -->|       ---
+
+        0x70000DF92650 ～ 0x70000DF92657     |<-- 8 BYTES -->|       ---
+                                                                      |
+        0x70000DF92658 ～ 0x70000DF9265F     |<-- 8 BYTES -->|        f5
+                                                                      |
+        0x70000DF92660 ～ 0x70000DF92667     |<-- 8 BYTES -->|       ---
+
+                                                    f3               f2               f7
+        0x70000DF92668 ～ 0x70000DF9266F     |<-- 4 BYTES -->||<-- 2 BYTES -->||<-- 2 BYTES -->|
+
+                                                    f1               f6               padding
+        0x70000DF92670 ～ 0x70000DF92677     |<-- 1 BYTES -->||<-- 1 BYTES -->||<-- 6 BYTES -->|
+         */
+        let m = MixedBytes {
+            f1: 1,
+            f2: 1,
+            f3: 'x',
+            f4: "rust".to_string(),
+            f5: "c++".to_string(),
+            f6: 1,
+            f7: 1,
+        };
+        println!("f1: 0x{:X}", &m.f1 as *const u8 as usize);
+        println!("f2: 0x{:X}", &m.f2 as *const i16 as usize);
+        println!("f3: 0x{:X}", &m.f3 as *const char as usize);
+        println!("f4: 0x{:X}", &m.f4 as *const String as usize);
+        println!("f5: 0x{:X}", &m.f5 as *const String as usize);
+        println!("f6: 0x{:X}", &m.f6 as *const u8 as usize);
+        println!("f7: 0x{:X}", &m.f7 as *const u16 as usize);
+
+        assert_eq!(std::mem::size_of::<MixedBytes>(), 64);
+    }
+}
+
+#[cfg(test)]
+pub mod testing {
+
+    #[test]
+    fn size_of_struct_in_bytes() {
+        crate::memory_layout::size_of_struct_in_one_bytes();
+        crate::memory_layout::size_of_struct_in_two_bytes();
+        crate::memory_layout::size_of_struct_in_four_bytes();
+        crate::memory_layout::size_of_struct_in_eight_bytes();
+        crate::memory_layout::size_of_struct_in_twenty_four_bytes();
+        crate::memory_layout::size_of_struct_in_mixed_bytes();
+    }
+}
