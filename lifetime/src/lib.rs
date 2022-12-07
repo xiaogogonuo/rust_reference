@@ -118,4 +118,95 @@ pub mod lifetime_annotation_in_function_signature {
     //! To use lifetime annotations in function signatures, we need to declare the generic lifetime
     //! parameters inside angle brackets between the function name and the parameter list, just as
     //! we did with generic type parameters.
+
+    /// The `longest` function definition specifying that all the references in the signature must
+    /// have the same lifetime `'a`.
+    ///
+    /// The function signature now tells Rust that for some lifetime `'a`, the function takes two
+    /// parameters, both of which are string slices that live at least as long as lifetime `'a`.
+    /// The function signature also tells Rust that the string slice returned from the function will
+    /// live at least as long as lifetime `'a`.
+    ///
+    /// In practice, it means that the lifetime of the reference returned by the longest function is
+    /// the same as the smaller of the lifetime of the values referred to by the function arguments.
+    ///
+    /// Remember, when we specify the lifetime parameters in this function signature, we’re not
+    /// changing the lifetimes of any values passed in or returned. Rather, we’re specifying that
+    /// the borrow checker should reject any values that don’t adhere to these constraints.
+    ///
+    /// When we pass concrete references to longest, the concrete lifetime that is substituted for
+    /// `'a` is the part of the scope of `x` that overlaps with the scope of `y`. In other words,
+    /// the generic lifetime `'a` will get the concrete lifetime that is equal to the smaller of
+    /// the lifetimes of `x` and `y`. Because we’ve annotated the returned reference with the same
+    /// lifetime parameter `'a`, the returned reference will also be valid for the length of the
+    /// smaller of the lifetimes of `x` and `y`.
+    pub fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+        if x.len() > y.len() {
+            x
+        } else {
+            y
+        }
+    }
+}
+
+pub mod thinking_in_terms_of_lifetime {
+
+    /// If we changed the implementation of the `longest` function to always return the first
+    /// parameter rather than the longest string slice, we do not need to specify a lifetime on the
+    /// `y` parameter. The following code will compile.
+    pub fn longest<'a>(x: &'a str, _y: &str) -> &'a str {
+        x
+    }
+}
+
+pub mod lifetime_annotation_in_struct {
+    //! So far, the structs we’ve defined all hold owned types. We can define structs to hold
+    //! references, but in that case we would need to add a lifetime annotation on every reference
+    //! in the struct’s definition.
+
+    /// This annotation means an instance of `ImportantExcerpt` can’t outlive the reference it holds
+    /// in its part field.
+    pub struct ImportantExcerpt<'a> {
+        part: &'a str,
+    }
+
+    pub fn struct_holds_reference_with_lifetime() {
+        let ie: ImportantExcerpt = ImportantExcerpt { part: "rust" };
+        println!("{}", ie.part);
+    }
+}
+
+pub mod lifetime_elision {
+    //! Lifetimes on function or method parameters are called input lifetimes, and lifetimes on
+    //! return values are called output lifetimes.
+    //!
+    //! The compiler uses three rules to figure out the lifetimes of the references when there
+    //! are not explicit annotations. The first rule applies to input lifetimes, and the second and
+    //! third rules apply to output lifetimes. If the compiler gets to the end of the three rules
+    //! and there are still references for which it can’t figure out lifetimes, the compiler will
+    //! stop with an error.
+    //!
+    //! ‼️
+    //! The first rule is that the compiler assigns a lifetime parameter to each parameter that’s a
+    //! reference. In other words, a function with one parameter gets one lifetime parameter:
+    //! `fn foo<'a>(x: &'a i32)`; a function with two parameters gets two separate lifetime
+    //! parameters: `fn foo<'a, 'b>(x: &'a i32, y: &'b i32)`; and so on.
+    //!
+    //! ‼️‼️
+    //! The second rule is that, if there is exactly one input lifetime parameter, that lifetime is
+    //! assigned to all output lifetime parameters: `fn foo<'a>(x: &'a i32) -> &'a i32`.
+    //!
+    //! ‼️‼️‼️
+    //! The third rule is that, if there are multiple input lifetime parameters, but one of them is
+    //! `&self` or `&mut self` because this is a method, the lifetime of self is assigned to all
+    //! output lifetime parameters.
+
+}
+
+#[cfg(test)]
+mod testing {
+    #[test]
+    fn run_lifetime_annotation_in_struct_struct_holds_reference_with_lifetime() {
+        crate::lifetime_annotation_in_struct::struct_holds_reference_with_lifetime();
+    }
 }
