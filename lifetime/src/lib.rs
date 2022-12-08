@@ -192,15 +192,65 @@ pub mod lifetime_elision {
     //! `fn foo<'a>(x: &'a i32)`; a function with two parameters gets two separate lifetime
     //! parameters: `fn foo<'a, 'b>(x: &'a i32, y: &'b i32)`; and so on.
     //!
-    //! ‼️‼️
+    //! ‼️-‼️
     //! The second rule is that, if there is exactly one input lifetime parameter, that lifetime is
     //! assigned to all output lifetime parameters: `fn foo<'a>(x: &'a i32) -> &'a i32`.
     //!
-    //! ‼️‼️‼️
+    //! ‼️-‼️-‼️
     //! The third rule is that, if there are multiple input lifetime parameters, but one of them is
     //! `&self` or `&mut self` because this is a method, the lifetime of self is assigned to all
     //! output lifetime parameters.
+}
 
+pub mod lifetime_annotation_in_method {
+    //! Lifetime names for struct fields always need to be declared after the impl keyword and then
+    //! used after the struct’s name, because those lifetimes are part of the struct’s type.
+    //!
+    //! In method signatures inside the impl block, references might be tied to the lifetime of
+    //! references in the struct’s fields, or they might be independent. In addition, the lifetime
+    //! elision rules often make it so that lifetime annotations are not necessary in method
+    //! signatures.
+
+    pub struct ImportantExcerpt<'a> {
+        part: &'a str,
+    }
+
+    impl<'a> ImportantExcerpt<'a> {
+        /// A method named level whose only parameter is a reference to self and whose return value
+        /// is an `i32`, which is not a reference to anything.
+        pub fn level(&self) -> i32 {
+            0
+        }
+
+        pub fn announce_and_return_part(&self, announcement: &str) -> &str {
+            println!("Attention please: {}", announcement);
+            self.part
+        }
+    }
+}
+
+pub mod static_lifetime {
+    //! One special lifetime is `'static`, which denotes that the affected reference can live for
+    //! the entire duration of the program. All string literals have the `'static` lifetime, which
+    //! we can annotate as follows:
+    //! ```let s: &'static str = "I have a static lifetime.";```
+    //!
+    //! This string is stored directly in the program’s binary, which is always available.
+    //! Therefore, the lifetime of all string literals is `'static`.
+}
+
+pub mod generic_type_trait_bound_lifetime {
+    pub fn longest_with_an_announcement<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a str
+    where
+        T: std::fmt::Display,
+    {
+        println!("{}", ann);
+        if x.len() > y.len() {
+            x
+        } else {
+            y
+        }
+    }
 }
 
 #[cfg(test)]
