@@ -116,8 +116,7 @@ pub mod lifetime_annotation_syntax {
 
 pub mod lifetime_annotation_in_function_signature {
     //! To use lifetime annotations in function signatures, we need to declare the generic lifetime
-    //! parameters inside angle brackets between the function name and the parameter list, just as
-    //! we did with generic type parameters.
+    //! parameters inside angle brackets between the function name and the parameter list.
 
     /// The `longest` function definition specifying that all the references in the signature must
     /// have the same lifetime `'a`.
