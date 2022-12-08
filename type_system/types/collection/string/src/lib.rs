@@ -321,6 +321,49 @@ pub mod common_used_method_of_string {
     }
 }
 
+pub mod advance {
+    pub fn string_variable() -> *const u8 {
+        let s: String = String::from("A_BCD");
+        let r: &str = &s;
+        r.as_ptr()
+    } // s goes out of scope, and "A_BCD" will be dropped.
+      // returned pointer will point to an invalid memory.
+
+    pub fn string_literals() -> *const u8 {
+        let s: &str = "A_BCD";
+        s.as_ptr()
+    } // s goes out of scope, but "A_BCD" won't be dropped.
+      // "A_BCD" is valid at the whole binary running time.
+
+    pub fn main() {
+        // output will change every times
+        // 64       64
+        // 128      0
+        // 87       90
+        // 253      96
+        // 156      30
+        let ptr: *const u8 = string_variable();
+        unsafe {
+            for i in 0..=4 {
+                println!("{}", *((ptr as usize + i) as *const u8));
+            }
+        }
+
+        // output will always be the same
+        // 65
+        // 95
+        // 66
+        // 67
+        // 68
+        let ptr: *const u8 = string_literals();
+        unsafe {
+            for i in 0..=4 {
+                println!("{}", *((ptr as usize + i) as *const u8));
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod testing {
     #[test]
