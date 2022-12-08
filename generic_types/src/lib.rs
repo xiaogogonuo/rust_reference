@@ -163,6 +163,102 @@ pub mod generic_types {
     }
 }
 
+pub mod advance {
+    pub mod struct_definition_and_impl_declaration {
+        //! generic type parameters in `struct` definition is not always the same as it in `impl`
+        //! declaration.
+        pub struct Point<T, U> {
+            x: T,
+            y: U,
+        }
+
+        impl<T, U> Point<T, U> {}
+
+        impl<A, B> Point<A, B> {}
+    }
+
+    pub mod struct_definition_and_method_signature {
+        //! generic type parameters in `struct` definition is not always the same as it in `struct`
+        //! method signature.
+        pub struct Point<T, U> {
+            x: T,
+            y: U,
+        }
+
+        impl<T, U> Point<T, U> {
+            /// generic type parameters are not needed after method `same_generic_type_param` since
+            /// the parameter `axis` shares the same generic type parameters with struct `Point`.
+            pub fn same_generic_type_param(self, axis: Point<T, U>) -> Point<T, U> {
+                Point {
+                    x: self.x,
+                    y: axis.y,
+                }
+            }
+        }
+
+        impl<T, U> Point<T, U> {
+            pub fn diff_generic_type_param<P, Q>(self, axis: Point<P, Q>) -> Point<T, Q> {
+                Point {
+                    x: self.x,
+                    y: axis.y,
+                }
+            }
+        }
+
+        impl<T, U> Point<T, U> {
+            pub fn dive_generic_type_param<Q>(self, axis: Point<T, Q>) -> Point<T, Q> {
+                Point {
+                    x: self.x,
+                    y: axis.y,
+                }
+            }
+        }
+    }
+
+    pub mod generic_type_parameter_constraint {
+
+        pub struct Point<T, U> {
+            x: T,
+            y: U,
+        }
+
+        impl<T, U> Point<T, U> {
+            /// expose to the point that field `x` and field `y` can be any type
+            pub fn expose_to_whatever_type(&self) {}
+        }
+
+        impl Point<u8, i8> {
+            /// expose to the point that field `x` is `u8` and field `y` is `i8`
+            pub fn expose_to_concrete_type(&self) {}
+        }
+
+        impl<T: Clone, U: std::fmt::Display> Point<T, U> {
+            /// expose to point that `x` implement `Clone` and `y` implement `Display`
+            pub fn expose_to_restrict_type(&self) {}
+        }
+
+        impl<T, U> Point<T, U> {
+            /// move `self` field
+            pub fn move_mix<P, Q>(self, other: Point<P, Q>) -> Point<T, Q> {
+                Point {
+                    x: self.x,
+                    y: other.y,
+                }
+            }
+        }
+
+        impl<T: Clone, U> Point<T, U> {
+            /// can't move a `&self` field, restrict `x` to `Clone` then copy it with `clone()`
+            pub fn copy_mix<P, Q>(&self, other: Point<P, Q>) -> Point<T, Q> {
+                Point {
+                    x: self.x.clone(),
+                    y: other.y,
+                }
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod testing {
 
