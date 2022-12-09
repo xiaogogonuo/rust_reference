@@ -121,6 +121,10 @@ pub mod lifetime_annotation_in_function_signature {
     /// The `longest` function definition specifying that all the references in the signature must
     /// have the same lifetime `'a`.
     ///
+    /// We want the signature to express the following constraint: the returned reference will be
+    /// valid as long as both the parameters are valid. This is the relationship between lifetimes
+    /// of the parameters and the return value.
+    ///
     /// The function signature now tells Rust that for some lifetime `'a`, the function takes two
     /// parameters, both of which are string slices that live at least as long as lifetime `'a`.
     /// The function signature also tells Rust that the string slice returned from the function will
