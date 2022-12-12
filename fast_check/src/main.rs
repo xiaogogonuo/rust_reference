@@ -11,23 +11,71 @@ fn main() {
 fn fast_check() {
     let s1: String = String::from("rust");
     let s2: String = String::from("china");
-    let ie: ImportantExcerpt = ImportantExcerpt {
+    let s3: String = String::from("shanghai");
+    let mut ie: ImportantExcerpt = ImportantExcerpt {
         name: &s1,
         home: &s2,
+        city: s3,
     };
     dbg!(ie.ignore_struct_lifetime_annotation());
     dbg!(ie._struct_lifetime_annotation());
     dbg!(ie.struct_lifetime_annotation());
+    dbg!(ie.announce_and_return_part("ss"));
+
+
+    let ss = String::from("iu");
+    let rr;
+    // let _ie;
+    let s4 = String::from("java");
+    {
+        let _ie = ImportantExcerpt {
+            name: "xyz",
+            home: &ss,
+            city: "xxxxxxx".to_string(),
+        };
+        rr = _ie._announce_and_return_part(&s4);
+
+    }
+    println!("xxxxx, {}", rr);
 }
 
 pub struct ImportantExcerpt<'a, 'b> {
     name: &'a str,
     home: &'b String,
+    city: String,
 }
 
 impl ImportantExcerpt<'_, '_> {
+    pub fn test(&mut self) -> String {
+        self.city = "".to_string();
+        "ss".to_string()
+    }
+}
+
+impl ImportantExcerpt<'_, '_> {
+    pub fn excerpt_level(&self) -> u8 {
+        1
+    }
+
     pub fn ignore_struct_lifetime_annotation(&self) -> (&str, &String) {
         (self.name, self.home)
+    }
+}
+
+impl<'a, 'b> ImportantExcerpt<'a, 'b> {
+    fn announce_and_return_part(&self, announcement: &str) -> &str {
+        println!("Attention please: {}", announcement);
+        self.name
+    }
+}
+
+impl<'a, 'b> ImportantExcerpt<'a, 'b> {
+    fn _announce_and_return_part<'c>(&'a self, announcement: &'c str) -> &'c str
+        where
+            'a: 'c,
+    {
+        println!("Attention please: {}", announcement);
+        self.name
     }
 }
 
