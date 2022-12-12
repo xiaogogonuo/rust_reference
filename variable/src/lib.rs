@@ -87,3 +87,27 @@ pub fn variable_shadowing() {
     let s: i32 = s.trim().parse().unwrap();
     assert_eq!(s, 100);
 }
+
+pub fn variable_declaration() {
+    // error[E0282]: type annotations needed
+    {
+        // let v;
+    }
+
+    // error[E0282]: type annotations needed
+    {
+        // cannot infer type
+        // let v: _;
+    }
+
+    // error[E0381]: borrow of possibly-uninitialized variable: `v`
+    {
+        // let v: i8;
+        // println!("{}", v);
+    }
+
+    // ok
+    {
+        let v: u8;
+    }
+}
