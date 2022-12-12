@@ -232,6 +232,11 @@ pub mod advance {
             pub fn expose_to_concrete_type(&self) {}
         }
 
+        impl<T> Point<T, &str> {
+            /// expose to the point that field `x` can be any type and field `y` is `&str`
+            pub fn expose_to_compound_type(&self) {}
+        }
+
         impl<T: Clone, U: std::fmt::Display> Point<T, U> {
             /// expose to point that `x` implement `Clone` and `y` implement `Display`
             pub fn expose_to_restrict_type(&self) {}
