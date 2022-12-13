@@ -277,7 +277,10 @@ pub mod lifetime_elision {
     //! output lifetime parameters.
 }
 
-pub mod lifetime_annotation_in_method {
+pub mod lifetime_annotation_in_method_definitions {
+    //! Where we declare and use the lifetime parameters depends on whether they’re related to the
+    //! struct fields or the method parameters and return values.
+    //!
     //! Lifetime names for struct fields always need to be declared after the impl keyword and then
     //! used after the struct’s name, because those lifetimes are part of the struct’s type.
     //!
