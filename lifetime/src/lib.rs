@@ -327,3 +327,105 @@ pub mod generic_type_trait_bound_lifetime {
         }
     }
 }
+
+pub mod dynamic_inferred_lifetime {
+    //! The life cycle of Rust cannot be specified manually, and the compiler needs to infer it
+    //! based on the parameters passed in. When the compiler cannot infer parameters based on a
+    //! certain statement, it will continue to execute and infer life cycle parameters. The compiler
+    //! continues to infer the lifetime parameters from the statement context and chooses the
+    //! smallest one.
+
+    pub struct Context<'a> {
+        var: Vec<&'a str>
+    }
+
+    pub fn right_case() {
+        let mut v = Context { var: vec![] }; // `'a` can't be inferred
+        v.var.push("rust up"); // `'a` was inferred to `'static`
+        println!("{:?}", v.var);
+    }
+
+    /// `'a` will be inferred to `'static` at `v.var.push("rust");`.
+    ///
+    /// when it comes to inner bracket, the lifetime of `s` is `'b`, then the compile will chose
+    /// the smaller lifetime of `'b`, but the lifetime of `v` is larger than `'b`, it panics.
+    pub fn error_case() {
+        let mut v = Context { var: vec![] };
+        v.var.push("rust"); // 'a
+
+        {
+            let s: String = String::from("go"); // 'b
+            v.var.push(&s);
+        }
+
+        // borrowed value does not live long enough
+        // println!("{:?}", v.var);
+    }
+
+    // name and vars will have different lifetime parameters, and the compiler will infer their
+    // lifetimes separately.
+    #[derive(Debug)]
+    struct RustContext<'a, 'b> {
+        name: &'a str,
+        vars: Vec<&'b str>,
+    }
+}
+
+pub mod implicit_lifetime_parameter_of_self {
+    struct Context<'a> {
+        name: &'a str,
+    }
+
+    impl<'a> Context<'a> {
+        /// `&self` has an implicit lifetime parameter, this lifetime is the area where `Context`
+        /// is instantiated. If the returned `&str` does not write the lifetime parameter, according
+        /// to the principle of lifetime omission, the returned parameter will have the same
+        /// lifetime as `&self`.
+        pub fn safety_mode(&self) -> &'a str {
+            self.name
+        }
+
+        pub fn danger_mode(&self) -> &str {
+            self.name
+        }
+    }
+
+    pub fn best_case() {
+        let s: String = String::from("rust");
+        let danger_ref: &str;
+        let safety_ref: &str;
+
+        {
+            let ctx = Context { name: &s };
+
+            // The lifetime of the returned `&str` is obviously longer than the lifetime of `&self`.
+            // But `&str` returned here will be limited to the lifetime of instance of `Context`.
+            // When the instance `ctx` of `Context` leaves the inner scope, the `danger_ref`
+            // lifetime ends and cannot be referenced.
+            danger_ref = ctx.danger_mode();
+            println!("danger: {}", danger_ref);
+
+            // The correct thing is that we explicitly declare that the lifetime of return value to
+            // `'a`, so everything is normal, and the lifetime of `safety_ref` is extended to the
+            // outer scope.
+            safety_ref = ctx.safety_mode();
+        }
+        println!("safety: {}", safety_ref);
+    }
+}
+
+struct Context<'a>(&'a str);
+
+struct Parser<'a> {
+    context: &'a Context<'a>,
+}
+
+impl<'a> Parser<'a> {
+    fn parse(&self) -> Result<(), &'a str> {
+        Err(&self.context.0[1..])
+    }
+}
+
+fn parse_context<'a>(context: &'a Context<'a>) -> Result<(), &'a str> {
+    Parser { context }.parse()
+}
