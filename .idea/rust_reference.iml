@@ -9,7 +9,12 @@
       <sourceFolder url="file://$MODULE_DIR$/type_system/types/scalar/character/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/generic_types/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/items/structs/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/lifetime/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/mir/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/pipeline/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/traits/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/type_system/types/slice/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/underscore/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/type_system/types/collection/string/target" />
       <excludeFolder url="file://$MODULE_DIR$/type_system/types/scalar/character/target" />
       <excludeFolder url="file://$MODULE_DIR$/fast_check/target" />
@@ -18,6 +23,11 @@
       <excludeFolder url="file://$MODULE_DIR$/generic_types/target" />
       <excludeFolder url="file://$MODULE_DIR$/traits/target" />
       <excludeFolder url="file://$MODULE_DIR$/items/structs/target" />
+      <excludeFolder url="file://$MODULE_DIR$/lifetime/target" />
+      <excludeFolder url="file://$MODULE_DIR$/underscore/target" />
+      <excludeFolder url="file://$MODULE_DIR$/type_system/types/slice/target" />
+      <excludeFolder url="file://$MODULE_DIR$/mir/target" />
+      <excludeFolder url="file://$MODULE_DIR$/pipeline/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
