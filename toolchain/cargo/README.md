@@ -55,3 +55,9 @@ cargo fmt
 ```shell
 cargo test -- --show-output
 ```
+
+# generate rust internal compiler pipeline
+```shell
+cargo rustc -- -Z unpretty=hir
+cargo rustc -- -Z unpretty=mir
+```
